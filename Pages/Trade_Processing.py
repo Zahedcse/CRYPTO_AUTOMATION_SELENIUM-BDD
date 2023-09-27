@@ -138,7 +138,7 @@ class TradeProcessing(Page):
         self.click(self.asset_4)
 
     def enter_portfolio_ID(self):
-        self.input_text(self.Portfolio_id, "MPS001")
+        self.input_text(self.Portfolio_id, "MPS002")
 
     def click_on_venue_field(self):
         self.click(self.Venue)
@@ -204,7 +204,7 @@ class TradeProcessing(Page):
         time.sleep(2)
         # self.driver.find_element(By.CSS_SELECTOR, "#portfolioId").clear()
         self.clear_input_field(*self.E_Portfolio_id)
-        self.input_text(self.E_Portfolio_id, "MPS001")
+        self.input_text(self.E_Portfolio_id, "MPS002")
         self.clear_input_field(self.E_Quantity)
         self.input_text(self.E_Quantity, "50")
         self.click(self.E_Update_trade)
@@ -227,7 +227,7 @@ class TradeProcessing(Page):
         self.click(self.Confirm_button)
 
     def validate_PnL_and_percentage(self):
-        Buying_Price = 26500.0
+        Buying_Price = 26086.176666666666
         print(f"Buying price: {Buying_Price}")
         Quan = self.find_element(self.Actual_Quantity)
         quantity = int(''.join(filter(str.isdigit, Quan.text)))
