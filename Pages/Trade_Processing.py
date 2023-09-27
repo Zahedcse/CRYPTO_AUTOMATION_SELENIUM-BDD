@@ -138,7 +138,7 @@ class TradeProcessing(Page):
         self.click(self.asset_4)
 
     def enter_portfolio_ID(self):
-        self.input_text(self.Portfolio_id, "MPS002")
+        self.input_text(self.Portfolio_id, "MPS001")
 
     def click_on_venue_field(self):
         self.click(self.Venue)
