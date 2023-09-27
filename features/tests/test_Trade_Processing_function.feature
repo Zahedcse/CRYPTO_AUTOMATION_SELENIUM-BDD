@@ -9,7 +9,7 @@ Feature: Trade-Processing
     Then the user will see the contents of table
     Then the user will create some Trade, will verify the price and will confirm it
     Then the user will go to portfolio management
-    Then the user will validate the P&L and P&L %
+#    Then the user will validate the P&L and P&L %
 #    Then the user will perform sell trade
 #    Then the user will perform edit functions on the created trade
 

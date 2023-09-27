@@ -75,7 +75,7 @@ class PortfolioManagement(Page):
     def click_portfolio(self):
         all_portfolio_Id = self.find_elements(self.All_Portfolio_Id)
         for Id in all_portfolio_Id:
-            if Id.text == "MPS002":
+            if Id.text == "MPS001":
                 Id.click()
                 break
 
