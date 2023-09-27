@@ -204,7 +204,7 @@ class TradeProcessing(Page):
         time.sleep(2)
         # self.driver.find_element(By.CSS_SELECTOR, "#portfolioId").clear()
         self.clear_input_field(*self.E_Portfolio_id)
-        self.input_text(self.E_Portfolio_id, "MPS002")
+        self.input_text(self.E_Portfolio_id, "MPS001")
         self.clear_input_field(self.E_Quantity)
         self.input_text(self.E_Quantity, "50")
         self.click(self.E_Update_trade)
