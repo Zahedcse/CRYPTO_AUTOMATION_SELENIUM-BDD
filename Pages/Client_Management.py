@@ -45,20 +45,20 @@ class ClientManagement(Page):
     Save_Button = (By.XPATH, "//button[@type='submit']")
     # --------------------Institutional Client-------------------------------
     Institutional_client = (By.LINK_TEXT, "Institutional Client")
-    Institutional_client_id = (By.ID, "clientId")
-    Institute_name = (By.ID, "name")
-    Institute_address = (By.ID, "address")
-    Institutional_client_phone = (By.ID, "phoneNumber")
-    Institutional_client_Mobile_Number = (By.ID, "mobileNumber")
-    Institutional_client_email = (By.ID, "email")
+    # Institutional_client_id = (By.ID, "clientId")
+    # Institute_name = (By.ID, "name")
+    # Institute_address = (By.ID, "address")
+    # Institutional_client_phone = (By.ID, "phoneNumber")
+    # Institutional_client_Mobile_Number = (By.ID, "mobileNumber")
+    # Institutional_client_email = (By.ID, "email")
     Institutional_client_KYC = (By.NAME, "kyc")
-    Institutional_client_account_manager = (By.ID, "accountManager")
+    # Institutional_client_account_manager = (By.ID, "accountManager")
     Institutional_client_AML_screening = (By.ID, "amlScreening")
-    Institutional_client_remark = (By.ID, "remark")
-    Institutional_client_chat_history = (By.ID, "chatHistory")
+    # Institutional_client_remark = (By.ID, "remark")
+    # Institutional_client_chat_history = (By.ID, "chatHistory")
     Institutional_client_document = (By.XPATH, "//p[text()='Document Upload']")
-    Institutional_close_button = (By.XPATH, "//button[@type='reset']")
-    Institutional_client_save_button = (By.XPATH, "//button[@type='submit']")
+    # Institutional_close_button = (By.XPATH, "//button[@type='reset']")
+    # Institutional_client_save_button = (By.XPATH, "//button[@type='submit']")
 
     def click_on_Client_Management(self):
         time.sleep(5)
@@ -70,20 +70,17 @@ class ClientManagement(Page):
         actual_column_names = [column_header.text for column_header in header_elements]
         print(actual_column_names)
         expected_column_names = ['Type', 'ClientID', 'Client Name', 'Client Manager', 'KYC', 'AML Screening']
-        if actual_column_names == expected_column_names:
-            print("Column names matches the expected list.")
-        else:
-            print("Column names do not match the expected list.")
+        assert actual_column_names == expected_column_names, f"expected column names {expected_column_names} but got {actual_column_names}"
 
     def open_settings_icon(self):
         self.click(self.setting_icon)
 
     def add_some_headers(self):
-        self.click(self.Checkbox_chat_history)
-        self.click(self.checkbox_tags)
-        self.click(self.checkbox_address)
+        headers_to_add = [self.Checkbox_chat_history, self.checkbox_tags, self.checkbox_address]
+        for header in headers_to_add:
+            self.click(header)
         self.click(self.settings_update)
-        time.sleep(4)
+        time.sleep(2)
 
     def verify_the_table_headers(self):
         header_elements = self.find_elements(self.Table_headings_list)
@@ -91,10 +88,7 @@ class ClientManagement(Page):
         print(actual_column_names)
         expected_column_names = ['Type', 'ClientID', 'Client Name', 'Client Manager', 'KYC', 'AML Screening',
                                  'Chat History', 'Tags', 'Address']
-        if actual_column_names == expected_column_names:
-            print("Column names matches the expected list.")
-        else:
-            print("Column names do not match the expected list.")
+        assert actual_column_names == expected_column_names, f"expected {expected_column_names} but got {actual_column_names}"
 
     def add_new_client(self):
         self.click(self.Add_client_button)
@@ -102,65 +96,65 @@ class ClientManagement(Page):
     def add_retail_client(self):
         self.click(self.Retail_client)
 
-    def enter_clientID(self):
-        self.input_text(self.Client_Id, "MPSPD")
+    def enter_clientID(self, ClientID):
+        self.input_text(self.Client_Id, ClientID)
 
-    def enter_Client_Name(self):
-        self.input_text(self.Client_Name, "Zahed Alam")
+    def enter_Client_Name(self, ClientName):
+        self.input_text(self.Client_Name, ClientName)
 
-    def enter_Date_Of_Birth(self):
-        self.input_text(self.Date_Of_Birth, "10-02-1998")
+    def enter_Date_Of_Birth(self, ClientDOB):
+        self.input_text(self.Date_Of_Birth, ClientDOB)
 
-    def enter_Residence_Address(self):
-        self.input_text(self.Residence_Address, "Dhaka, Bangladesh")
+    def enter_Residence_Address(self, ClientAddress):
+        self.input_text(self.Residence_Address, ClientAddress)
 
-    def enter_Email(self):
-        self.input_text(self.Email, "Zha@gmail.com")
+    def enter_Email(self, ClientEmail):
+        self.input_text(self.Email, ClientEmail)
 
-    def enter_Emergency_Contact(self):
-        self.input_text(self.Emergency_Contact, "01873634543")
+    def enter_Emergency_Contact(self, ClientMobile):
+        self.input_text(self.Emergency_Contact, ClientMobile)
 
-    def enter_Account_Manager(self):
-        self.input_text(self.Account_Manager, "Rakib Khan")
+    def enter_Account_Manager(self, ClientAccManager):
+        self.input_text(self.Account_Manager, ClientAccManager)
 
-    def enter_Remark(self):
-        self.input_text(self.Remark, "Hello")
+    def enter_Remark(self, ClientRemark):
+        self.input_text(self.Remark, ClientRemark)
 
-    def enter_Save_Button(self):
+    def click_Save_Button(self):
         self.click(self.Save_Button)
 
     def click_on_Client_Management_link(self):
         self.click(self.Client_management_link)
 
-    def add_new_client_again(self):
+    def add_ins_client(self):
         self.click(self.Add_client_button)
 
-    def add_institutional_client(self):
+    def click_institutional_client(self):
         self.click(self.Institutional_client)
 
-    def input_clientID(self):
-        self.input_text(self.Institutional_client_id, "MPSJH")
+    def input_clientID(self, InsClientID):
+        self.input_text(self.Client_Id, InsClientID)
 
-    def input_clientName(self):
-        self.input_text(self.Institute_name, "TulipTech LTD")
+    def input_clientName(self, InsName):
+        self.input_text(self.Client_Name, InsName)
 
-    def input_address(self):
-        self.input_text(self.Institute_address, "Leicester, UK")
+    def input_address(self, InsAddress):
+        self.input_text(self.Residence_Address, InsAddress)
 
-    def input_client_phone(self):
-        self.input_text(self.Institutional_client_phone, "98843756375")
+    def input_client_phone(self, InsPhone):
+        self.input_text(self.Phone_Number, InsPhone)
 
-    def input_mobile(self):
-        self.input_text(self.Institutional_client_Mobile_Number, "01846899956")
+    def input_mobile(self, InsMobile):
+        self.input_text(self.Mobile_Number, InsMobile)
 
-    def input_email(self):
-        self.input_text(self.Institutional_client_email, "tt@tulip-tech.com")
+    def input_email(self, InsEmail):
+        self.input_text(self.Email, InsEmail)
 
-    def input_rest_of_the_details(self):
-        self.input_text(self.Institutional_client_account_manager, "Rakib Khan")
-        self.input_text(self.Institutional_client_AML_screening, "Hello AML")
-        self.input_text(self.Institutional_client_remark, "Hello remark")
-        self.input_text(self.Institutional_client_chat_history, "Hello chat history")
+    def input_rest_of_the_details(self, InsAccManager, InsAMLScre, Remark, InsChatHistory):
+        self.input_text(self.Account_Manager, InsAccManager)
+        self.input_text(self.Institutional_client_AML_screening, InsAMLScre)
+        self.input_text(self.Remark, Remark)
+        self.input_text(self.Chat_History, InsChatHistory)
 
     def click_on_save(self):
-        self.click(self.Institutional_client_save_button)
+        self.click(self.Save_Button)

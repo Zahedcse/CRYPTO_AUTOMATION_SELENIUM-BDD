@@ -1,5 +1,6 @@
 import time
-
+import allure
+from allure_commons.types import AttachmentType
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -10,6 +11,11 @@ from App.Application import Application
 
 def browser_init(context):
     context.driver = webdriver.Chrome()
+    ''' MOBILE EMULATION'''
+    # mobile_emulation = {"deviceName": "iPad Air"}
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+    # context.driver = webdriver.Chrome(options=chrome_options)
     # driver_path = GeckoDriverManager().install()  # Use GeckoDriverManager for Firefox
     # context.driver = webdriver.Firefox(executable_path=driver_path)  # Use Firefox WebDriver here
     context.driver.maximize_window()
@@ -39,5 +45,12 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    context.driver.delete_all_cookies()
+    # context.driver.delete_all_cookies()
     context.driver.quit()
+
+
+def after_step(context, step):
+    if step.status == 'failed':
+        allure.attach(context.driver.get_screenshot_as_png()
+                      ,name="failed_screenshot"
+                      ,attachment_type=AttachmentType.PNG)
