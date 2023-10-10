@@ -31,21 +31,29 @@ class Page:
         actual_text = self.driver.find_element(*locator).text
         assert expected_text in actual_text, f"Expected {expected_text}, but got {actual_text}"
 
-    def wait_for_element_to_be_clickable(self, locator, timeout=10):
+    def wait_for_element_to_be_clickable(self, *locator, timeout=10):
         element = WebDriverWait(self, timeout).until(
             EC.element_to_be_clickable(*locator)
         )
         element.click()
 
-    def wait_for_element_to_be_visible(self, *locator, timeout=10):
+    def wait_for_element_to_be_visible(self, locator, timeout=10):
         WebDriverWait(self.driver, timeout).until(
             EC.visibility_of_element_located(locator)
         )
 
-    def wait_for_element_to_be_present(self, *locator, timeout=10):
+    def wait_for_elements_to_be_visible(self, locator, timeout=10):
         WebDriverWait(self.driver, timeout).until(
-            EC.presence_of_element_located(locator)
+            EC.visibility_of_all_elements_located(locator)
         )
+
+    def wait_for_element_to_be_present(self, locator):
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.presence_of_element_located(locator))
+
+    def wait_for_elements_to_be_present(self, locator):
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.presence_of_all_elements_located(locator))
 
     def switch_to_iframe(self, *locator):
         iframe = self.find_element(*locator)

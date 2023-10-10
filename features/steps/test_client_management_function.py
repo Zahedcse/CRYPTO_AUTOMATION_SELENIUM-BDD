@@ -2,6 +2,8 @@ import time
 
 from behave import then, when
 
+from utilities.EmailWithTimeStampGenerator import get_new_email_with_timestamp, generate_client_id
+
 
 @when(u"the user navigates to the Client Management Page")
 def click_on_the_Client_management_page(context):
@@ -51,14 +53,15 @@ def fill_retail_details(context):
     client = context.app.client_management
     table = context.table
     for row in table:
-        client.enter_clientID(row['ClientID'])
-        client.enter_Client_Name(row['ClientName'])
-        client.enter_Date_Of_Birth(row['ClientDOB'])
-        client.enter_Residence_Address(row['ClientAddress'])
-        client.enter_Email(row['ClientEmail'])
-        client.enter_Emergency_Contact(row['ClientMobile'])
-        client.enter_Account_Manager(row['ClientAccManager'])
-        client.enter_Remark(row['ClientRemark'])
+        client.enter_clientID()
+        client.enter_Client_Name(row['Name'])
+        client.enter_Date_Of_Birth(row['DOB'])
+        client.enter_Residence_Address(row['Address'])
+        new_email = get_new_email_with_timestamp()
+        client.enter_Email(new_email)
+        client.enter_Emergency_Contact(row['Mobile'])
+        client.enter_Account_Manager(row['AccManager'])
+        client.enter_Remark(row['Remark'])
         client.click_Save_Button()
         time.sleep(3)
 
@@ -72,17 +75,18 @@ def click_client_management(context):
 @then(u'the user will create an Institutional Client with the following details')
 def create_institutional_client(context):
     ins_client = context.app.client_management
-    table = context.table  # This will give you access to the Examples table data
+    table = context.table
     for row in table:
         ins_client.add_ins_client()
         ins_client.click_institutional_client()
-        ins_client.input_clientID(row['InsClientID'])
+        ins_client.input_clientID()
         ins_client.input_clientName(row['InsName'])
         ins_client.input_address(row['InsAddress'])
         ins_client.input_client_phone(row['InsPhone'])
         ins_client.input_mobile(row['InsMobile'])
-        ins_client.input_email(row['InsEmail'])
-        ins_client.input_rest_of_the_details(row['InsAccManager'], row['InsAMLScre'], row['Remark'], row['InsChatHistory'])
+        new_email = get_new_email_with_timestamp()
+        ins_client.input_email(new_email)
+        ins_client.input_rest_of_the_details(row['InsAccManager'], row['InsAMLScre'], row['InsRemark'], row['InsChatHistory'])
         ins_client.click_on_save()
         time.sleep(6)
 

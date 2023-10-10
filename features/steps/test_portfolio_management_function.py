@@ -9,9 +9,10 @@ def user_on_the_portfolio_management(context):
     context.app.portfolio_management.click_portfolio_management()
 
 
-@then('the user will be able to click on a portfolio')
-def user_click_on_portfolio(context):
-    context.app.portfolio_management.click_portfolio()
+@then('the user will be able to click on a portfolio {portfolio}')
+def user_click_on_portfolio(context, portfolio):
+    context.app.portfolio_management.click_portfolio(portfolio)
+    time.sleep(2)
 
 
 @then('the user will be able to see the portfolio valuations and total PnL')
@@ -39,3 +40,21 @@ def verify_pnl_valuations(context):
 @then("the user will able to see the portfolio Assets Table")
 def verify_table_contents(context):
     context.app.portfolio_management.verify_asset_table_headings()
+
+
+"""Asset Transfer Table"""
+
+
+@then('the user will click on the Asset transfer Table')
+def click_on_asset_transfer(context):
+    context.app.portfolio_management.click_asset_transfer()
+
+
+@then('user will fill all the fields for FROM portfolio')
+def fill_all_fields(context):
+    context.app.portfolio_management.fill_swap_fields()
+
+
+@then('user will fill all the fields for TO Portfolio')
+def fill_to_fields(context):
+    context.app.portfolio_management.fill_To_fields()

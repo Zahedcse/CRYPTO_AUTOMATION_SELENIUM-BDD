@@ -1,6 +1,8 @@
 import time
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from Pages.Base import Page
 
@@ -10,12 +12,12 @@ class TradeProcessing(Page):
 
     """Trade processing Table"""
     Trade_processing = (By.XPATH, "//ol /li /span[text()='Trades Processing']")
-
     All_tabs = (By.XPATH, "//div/label[contains(@class,'ant-radio-button')]")
-
     All_trade = (By.XPATH, "//span[text()='All Trade']")
     Exchange = (By.XPATH, "//span[text()='Exchange']")
     Otc = (By.XPATH, "//span[text()='OTC']")
+    allvenue = (By.XPATH,
+                "(//div[@class='ant-select-dropdown bg-sidebar rounded-sm moops-dropdown-style css-2dphzb ant-select-dropdown-placement-bottomLeft'])[1]/div")
 
     Table_headings = (By.XPATH, "//thead/tr/th")
     """New Trade Button"""
@@ -40,6 +42,8 @@ class TradeProcessing(Page):
     Quantity = (By.CSS_SELECTOR, "#quantity")
     Price = (By.CSS_SELECTOR, "#price")
     Initiate_trade_button = (By.XPATH, "//div/button/span[.='Initiate Trade']")
+    Notification = (By.CSS_SELECTOR, 'div > div.ant-notification-notice-description')
+    error_message = (By.CSS_SELECTOR, "div[class='text-[11px] right-0 bottom-50 h-4 mt-1 mb-2 text-red-500']")
     # Current_value_usd = (By.XPATH, "//th[text()='Current Value (USD)']")
     # Action = (By.XPATH, "//th[text()='Action']")
     All_trade_tab = (By.XPATH, "//label/span[.='All Trade']")
@@ -47,6 +51,7 @@ class TradeProcessing(Page):
     """Got 10 checkboxes"""
     Check_box = (By.XPATH, "(//label/span/input[@type = 'checkbox'])[2]")
     edit_button = (By.XPATH, "(//td/div/div)[1]")
+    input_fields = (By.TAG_NAME, 'input')
 
     """Edit Trade Form"""
     Edit_trade = (By.XPATH, "//div[@class='ant-modal-title']")
@@ -137,17 +142,28 @@ class TradeProcessing(Page):
     def select_asset_WBC(self):
         self.click(self.asset_4)
 
-    def enter_portfolio_ID(self):
-        self.input_text(self.Portfolio_id, "MPS002")
+    def enter_portfolio_ID(self, PortfolioID):
+        self.input_text(self.Portfolio_id, PortfolioID)
 
     def click_on_venue_field(self):
         self.click(self.Venue)
+        time.sleep(2)
+
+    # def select_venue(self):
+    #     venue_locator = self.allvenue
+    #     wait = WebDriverWait(self.driver, 10)
+    #     elements = wait.until(EC.presence_of_all_elements_located(venue_locator))
+    #     for element in elements:
+    #         print(element.text)
+    #         if element.text == 'Exchange':
+    #             element.click()
 
     def select_venue_Exchange(self):
         self.click(self.Venue_portfolio_Exchange)
 
-    def select_venue_OTC(self):
-        self.click(self.Venue_portfolio_OTC)
+    #
+    # def select_venue_OTC(self):
+    #     self.click(self.Venue_portfolio_OTC)
 
     def click_on_instrument_type_field(self):
         self.click(self.Instrument_type)
@@ -170,14 +186,24 @@ class TradeProcessing(Page):
     def select_position_value(self):
         self.click(self.Position_value)
 
-    def enter_Quantity(self):
-        self.input_text(self.Quantity, "100")
+    def enter_Quantity(self, Quantity):
+        self.input_text(self.Quantity, Quantity)
 
-    def enter_price(self):
-        self.input_text(self.Price, "26500")
+    def enter_price(self, price):
+        self.input_text(self.Price, price)
 
     def Click_on_initiate_button(self):
         self.click(self.Initiate_trade_button)
+
+    def verify_success_message(self, text):
+        element = self.find_element(self.Notification)
+        actual_text = element.text.strip()
+        assert actual_text == text, f"Expected '{text}' but got '{actual_text}'"
+
+    def verify_error_message(self, message):
+        element = self.find_element(self.error_message)
+        actual_text = element.text.strip()
+        assert actual_text == message, f"Expected '{message}' but got '{actual_text}'"
 
     def assert_quantity_price_trade(self):
         quantity_element = self.find_element(self.Asset_quantity)
@@ -198,30 +224,21 @@ class TradeProcessing(Page):
     def click_on_check_box(self):
         self.click(self.Check_box)
 
-    def edit_trade(self):
+    def click_on_edit_trade(self):
         self.click(self.edit_button)
-        self.click(self.E_Portfolio_id)
-        time.sleep(2)
-        # self.driver.find_element(By.CSS_SELECTOR, "#portfolioId").clear()
-        self.clear_input_field(*self.E_Portfolio_id)
-        self.input_text(self.E_Portfolio_id, "MPS001")
-        self.clear_input_field(self.E_Quantity)
-        self.input_text(self.E_Quantity, "50")
-        self.click(self.E_Update_trade)
-        self.click(self.Check_box)
 
-    # def clear_portfolio_ID(self):
-    #
-    #
-    # def Edit_Portfolio_ID(self):
-    #
-    # def clear_quantity(self):
-    #
-    # def Edit_quantity(self):
-    #
-    # def click_on_update_trade_button(self):
-    #
-    # def click_on_check_box_again(self):
+    def clear_all_input_fields(self):
+        # Find all input elements on the page
+        input_elements = self.input_fields
+        for input_element in input_elements:
+            input_element.clear()
+
+    def edit_trade(self):
+        self.click(self.E_Portfolio_id)
+        self.input_text(self.E_Portfolio_id, "MPS001")
+        self.input_text(self.E_Quantity, "50")
+        self.input_text(self.E_Price, "23000")
+        self.click(self.E_Update_trade)
 
     def click_on_confirm_button(self):
         self.click(self.Confirm_button)
@@ -234,9 +251,9 @@ class TradeProcessing(Page):
         element = self.find_element(self.Available_asset_value).text
         available_asset_value = float(element.replace(',', ''))
         print(f"Available asset value: {available_asset_value}")
-        pnl_result = round(available_asset_value - (Buying_Price*quantity), 2)
+        pnl_result = round(available_asset_value - (Buying_Price * quantity), 2)
         print(f"pnl_result = {pnl_result}")
-        pnl_percentage_result = round((pnl_result/(Buying_Price * quantity)) * 100, 2)
+        pnl_percentage_result = round((pnl_result / (Buying_Price * quantity)) * 100, 2)
         print(f"pnl_percentage_result = {pnl_percentage_result}")
 
         element1 = self.find_element(self.ActualPnL).text

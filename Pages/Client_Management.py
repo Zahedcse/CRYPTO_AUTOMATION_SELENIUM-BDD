@@ -2,6 +2,7 @@ import time
 
 from selenium.webdriver.common.by import By
 from Pages.Base import Page
+from utilities.EmailWithTimeStampGenerator import generate_client_id
 
 
 class ClientManagement(Page):
@@ -45,20 +46,8 @@ class ClientManagement(Page):
     Save_Button = (By.XPATH, "//button[@type='submit']")
     # --------------------Institutional Client-------------------------------
     Institutional_client = (By.LINK_TEXT, "Institutional Client")
-    # Institutional_client_id = (By.ID, "clientId")
-    # Institute_name = (By.ID, "name")
-    # Institute_address = (By.ID, "address")
-    # Institutional_client_phone = (By.ID, "phoneNumber")
-    # Institutional_client_Mobile_Number = (By.ID, "mobileNumber")
-    # Institutional_client_email = (By.ID, "email")
     Institutional_client_KYC = (By.NAME, "kyc")
-    # Institutional_client_account_manager = (By.ID, "accountManager")
     Institutional_client_AML_screening = (By.ID, "amlScreening")
-    # Institutional_client_remark = (By.ID, "remark")
-    # Institutional_client_chat_history = (By.ID, "chatHistory")
-    Institutional_client_document = (By.XPATH, "//p[text()='Document Upload']")
-    # Institutional_close_button = (By.XPATH, "//button[@type='reset']")
-    # Institutional_client_save_button = (By.XPATH, "//button[@type='submit']")
 
     def click_on_Client_Management(self):
         time.sleep(5)
@@ -96,8 +85,9 @@ class ClientManagement(Page):
     def add_retail_client(self):
         self.click(self.Retail_client)
 
-    def enter_clientID(self, ClientID):
-        self.input_text(self.Client_Id, ClientID)
+    def enter_clientID(self):
+        clientId = generate_client_id()
+        self.input_text(self.Client_Id, clientId)
 
     def enter_Client_Name(self, ClientName):
         self.input_text(self.Client_Name, ClientName)
@@ -132,8 +122,9 @@ class ClientManagement(Page):
     def click_institutional_client(self):
         self.click(self.Institutional_client)
 
-    def input_clientID(self, InsClientID):
-        self.input_text(self.Client_Id, InsClientID)
+    def input_clientID(self):
+        client_id = generate_client_id()
+        self.input_text(self.Client_Id, client_id)
 
     def input_clientName(self, InsName):
         self.input_text(self.Client_Name, InsName)

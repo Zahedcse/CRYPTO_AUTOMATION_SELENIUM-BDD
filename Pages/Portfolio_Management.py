@@ -1,6 +1,7 @@
 import time
 
 from selenium.common import NoSuchElementException
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from Pages.Base import Page
 
@@ -8,7 +9,7 @@ from Pages.Base import Page
 class PortfolioManagement(Page):
     Portfolio_Management = (By.XPATH, "(//li[@role='menuitem'])[3]")
     portfolio_list = (By.XPATH, "//div[@class='grid grid-cols-12 md:gap-8 gap-y-8' ]/div")
-    portfolio_1 = (By.XPATH, "//div[@id='fund_card_0']")
+
     All_Portfolio_Id = (By.XPATH, "//div[@class='text-[12px] font-thin text-white']")
     Total_PnL = (By.CSS_SELECTOR,
                  "div#__next div.p-8.rounded-md.cursor-pointer.bg-sidebar > div.block.mb-6 > div.text-xl.font-medium")
@@ -18,11 +19,10 @@ class PortfolioManagement(Page):
     All_PnL_Value = (By.XPATH, "//tr/td[position()=10]")
     Next_Page_Button = (By.CSS_SELECTOR, "li.ant-pagination-next")
     Previous_Page = (By.XPATH, "//div[normalize-space()='1']")
-    Valuation_amount = (By.XPATH, "//span[@class='text-base font-medium']")
+    valuation_amount = (By.XPATH, "(//div[@class='mt-8 text-[28px] font-medium'])[1]")
+    Valuation_amount_tooltip = (By.XPATH, "(//div[@role='tooltip'])[1]")
     Total_PnL_text = (By.XPATH, "(//div[@class='mt-8 text-[28px] font-medium'])[2]")
     Total_PnL_tooltip = (By.XPATH, "(//div[@role='tooltip'])[2]")
-    # Portfolio = (By.XPATH, "//span[text()='Portfolio']")
-
     Portfolio_management_Tab = (By.XPATH, "(//li[@role='menuitem'])[3]")
     # Portfolio_Management = (By.XPATH, "//ol/li/span[text()='Portfolio Management']")
     Portfolio_Id = (By.XPATH, "//div[@class='text-[12px] font-thin text-white']")
@@ -33,32 +33,21 @@ class PortfolioManagement(Page):
     """"Portfolio Management Table"""
     table_headings = (By.XPATH, "//thead/tr/th")
 
-    portfolio_Id = (By.XPATH, "//th[text()='Portfolio ID']")
-    Assets = (By.XPATH, "//th[text()='Assets']")
-    Instrument = (By.XPATH, "//th[text()='Instrument']")
-    Quantity = (By.XPATH, "//th[text()='Quantity']")
-    Value_USD = (By.ID, "//th[text()='Value (USD)']")
-    Locked_assets = (By.XPATH, "//th[text()='Locked Assets']")
-    Locked_value = (By.XPATH, "//th[text()='Locked Value (USD)']")
-    Available_asset = (By.XPATH, "//th[text()='Available Assets']")
-    Available_asset_value = (By.XPATH, "//th[text()='Available Assets Value (USD)']")
-    P_L = (By.XPATH, "//th[text()='P&L (USD)']")
-    Percent_of_P_L = (By.XPATH, "//th[text()='P&L (%)']")
-
     """"Asset swap Transfer"""
-    Asset_transfer = (By.XPATH, "//span[text()='Asset Transfer']")
+    Asset_transfer = (By.XPATH, "//span[normalize-space()='Asset Transfer']")
     Asset_transfer_form = (By.XPATH, "//span[text()='Asset Swap Form']")
-    From_venue = (By.XPATH, "//input[@id='rc_select_1']")
-    Venue_options = (By.CSS_SELECTOR, ".ant-select-item-option-content")
+    From_venue = (By.XPATH, "(//input[@type='search'])[2]")
+    Venue_options = (By.XPATH, "//div[@class='rc-virtual-list-holder-inner']")
     From_account = (By.XPATH, "//input[@id='fromPortfolioId']")
-    Form_asset_input = (By.CSS_SELECTOR, "#rc_select_1")
+    Form_asset_input = (By.XPATH, "(//input[@type='search'])[3]")
     From_asset_options = (By.XPATH, "//div[@class='ant-select-item ant-select-item-option']")
     From_quantity = (By.CSS_SELECTOR, "#fromQuantity")
     From_reason = (By.CSS_SELECTOR, "#reason")
-    To_venue = (By.CSS_SELECTOR, "#rc_select_3")
-    Counter_party = (By.CSS_SELECTOR, "#clientId")
-    To_account = (By.CSS_SELECTOR, "#toPortfolioId")
-    To_quantity = (By.CSS_SELECTOR, "#toQuantity")
+    To_venue = (By.XPATH, "(//input[@type='search'])[4]")
+    Counter_party = (By.ID, "toClientId")
+    To_account = (By.ID, "toPortfolioId")
+    To_Asset = (By.XPATH, "(//input[@type='search'])[5]")
+    To_quantity = (By.ID, "toQuantity")
     Initiate_Transfer = (By.XPATH, "//button[@type='submit']")
 
     """"All other transfer form"""
@@ -72,10 +61,10 @@ class PortfolioManagement(Page):
     def click_portfolio_management(self):
         self.click(self.Portfolio_management_Tab)
 
-    def click_portfolio(self):
+    def click_portfolio(self, portfolio):
         all_portfolio_Id = self.find_elements(self.All_Portfolio_Id)
         for Id in all_portfolio_Id:
-            if Id.text == "MPS001":
+            if Id.text == portfolio:
                 Id.click()
                 break
 
@@ -103,9 +92,17 @@ class PortfolioManagement(Page):
         return summation
 
     def verify_valuation_summation(self, num_pages=2):
-        portfolio_valuation = self.find_element(self.Valuation_amount).text
+        self.hover_over_element(self.valuation_amount)
+        time.sleep(2)
+        tooltip_element = self.find_element(self.Valuation_amount_tooltip)
+        portfolio_valuation = tooltip_element.text
+        print(portfolio_valuation)
         portfolio_summation = self.calculate_summation(num_pages, self.All_Value)
         self.verify_summation(portfolio_valuation, portfolio_summation)
+
+        # portfolio_valuation = self.find_element(self.Valuation_amount).text
+        # portfolio_summation = self.calculate_summation(num_pages, self.All_Value)
+        # self.verify_summation(portfolio_valuation, portfolio_summation)
 
     def click_on_first_Page(self):
         self.click(self.Previous_Page)
@@ -115,9 +112,6 @@ class PortfolioManagement(Page):
         time.sleep(2)
         tooltip_element = self.find_element(self.Total_PnL_tooltip)
         portfolio_PnL = tooltip_element.text
-        # locator_value = self.find_element(self.Total_PnL_Amount).text
-        # numeric_value = float("".join(filter(str.isdigit, locator_value)))
-        # portfolio_PnL = numeric_value * 1000000
         print(portfolio_PnL)
         PnL_summation = self.calculate_summation(num_pages, self.All_PnL_Value)
         self.verify_summation(portfolio_PnL, PnL_summation)
@@ -146,9 +140,47 @@ class PortfolioManagement(Page):
             element = header.text
             actual_headers.append(element)
         print(actual_headers)
+        assert expected_headers == actual_headers, f"expected headers {expected_headers} but got {actual_headers}"
 
-        if actual_headers == expected_headers:
-            print("Actual Column headers matches the expected column headers.")
-        else:
-            print("Actual Column headers do not match the expected headers.")
-        assert expected_headers == actual_headers
+    def click_asset_transfer(self):
+        self.wait_for_element_to_be_present(self.Asset_transfer)
+        self.click(self.Asset_transfer)
+
+    def fill_swap_fields(self):
+        self.click(self.From_venue)
+        time.sleep(2)
+        self.input_text(self.From_venue, "Portfolio")
+        self.find_element(self.From_venue).send_keys(Keys.ENTER)
+        # options = self.find_elements(self.Venue_options)
+        # for option in options:
+        #     if option.text == 'Portfolio':
+        #         option.click()
+        #         break
+        self.input_text(self.From_account, "MPS001")
+        self.click(self.Form_asset_input)
+        time.sleep(2)
+        self.input_text(self.Form_asset_input, "Bitcoin")
+        self.find_element(self.Form_asset_input).send_keys(Keys.ENTER)
+        self.input_text(self.From_quantity, '100')
+
+    def fill_To_fields(self):
+        self.click(self.To_venue)
+        time.sleep(2)
+        self.input_text(self.To_venue, 'Portfolio')
+        self.find_element(self.To_venue).send_keys(Keys.ENTER)
+        self.input_text(self.Counter_party, "MPSNN")
+        self.input_text(self.To_account, "MPS017")
+        self.click(self.To_Asset)
+        time.sleep(2)
+        self.input_text(self.To_Asset, 'Ethereum')
+        self.find_element(self.To_Asset).send_keys(Keys.ENTER)
+        self.input_text(self.To_quantity, '10')
+        self.click(self.Initiate_Transfer)
+        time.sleep(2)
+
+
+
+
+
+
+

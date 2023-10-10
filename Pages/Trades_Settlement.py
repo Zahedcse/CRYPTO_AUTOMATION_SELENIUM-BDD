@@ -1,7 +1,9 @@
 from selenium.webdriver.common.by import By
 
+from Pages.Base import Page
 
-class TradesSettlement:
+
+class TradeSettlement(Page):
     Home = (By.XPATH, "//a[@href='/app']")
     Trades_settlement = (By.XPATH, "//li/span[text()='Trades Settlement']")
     Asset_Transfer = (By.XPATH, "//li/span[text()='Asset Transfer']")
@@ -48,3 +50,7 @@ class TradesSettlement:
     A_reason = (By.XPATH, "//th[text()='Reason']")
     A_execute_order = (By.XPATH, "//th[text()='Execute Order']")
     A_status = (By.XPATH, "//th[text()='Status']")
+
+    def click_on_trade_settlement(self):
+        self.click(self.Trades_settlement)
+

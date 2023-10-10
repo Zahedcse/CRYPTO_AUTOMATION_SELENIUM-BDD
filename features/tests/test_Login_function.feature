@@ -28,4 +28,3 @@ Feature: Authentication
     And the user clicks the login button
     Then they should be on the home page
 
-

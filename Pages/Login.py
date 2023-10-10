@@ -7,6 +7,7 @@ class Login(Page):
     Password_field = (By.XPATH, "//input[@name='password']")
     Checkbox = (By.CSS_SELECTOR, '.ant-checkbox-input')
     Click_button = (By.CSS_SELECTOR, 'button[type="submit"]')
+    # Notification = (By.CSS_SELECTOR, 'div > div.ant-notification-notice-description')
 
     def input_email(self, email):
         self.input_text(self.Email_field, email)
